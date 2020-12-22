@@ -13,7 +13,8 @@ export class PhotoListComponent implements OnInit {
 
   photos: Photo[] = [];
   filter: string  = '';
-
+  // filter: any;
+  
 
   constructor(
     private photoService: PhotoService,
@@ -25,6 +26,10 @@ export class PhotoListComponent implements OnInit {
     this.photoService
       .listFromUser(userName)
       .subscribe(photos => this.photos = photos);    
+  }
+
+  keyupFilter(target: EventTarget) {
+    this.filter = (target as HTMLInputElement).value    
   }
 
 
