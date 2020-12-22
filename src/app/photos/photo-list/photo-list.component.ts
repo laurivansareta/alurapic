@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime } from "rxjs/operators";
+
 import { Photo } from '../photo/photo';
 
 @Component({
@@ -7,21 +10,29 @@ import { Photo } from '../photo/photo';
   templateUrl: './photo-list.component.html',
   styleUrls: ['./photo-list.component.css']
 })
-export class PhotoListComponent implements OnInit {
+export class PhotoListComponent implements OnInit, OnDestroy {
 
   photos: Photo[] = [];
-  filter: string  = '';  
-  
+  filter: string  = '';
+  debounce: Subject<string> = new Subject<string>();    
 
   constructor(private activatedRoute: ActivatedRoute) {}
   
   ngOnInit(): void{    
     this.photos = this.activatedRoute.snapshot.data['photos'];
+    
+    this.debounce
+    .pipe(debounceTime(1000))
+    .subscribe(filter => this.filter = filter);
   }
-
+  
   keyupFilter(target: EventTarget) {
-    this.filter = (target as HTMLInputElement).value    
+    this.filter = (target as HTMLInputElement).value;
+    this.debounce.next(this.filter);
   }
-
+  
+  ngOnDestroy(): void {
+    this.debounce.unsubscribe();
+  }
 
 }
