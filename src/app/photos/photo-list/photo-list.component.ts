@@ -14,7 +14,7 @@ export class PhotoListComponent implements OnInit {
   photos: Photo[] = [];
   filter: string  = '';
 
-  hasMore: boolean = false;
+  hasMore: boolean = true;
   currentPage: number = 1;
   userName: string = '';
 
